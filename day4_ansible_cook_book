@@ -1,0 +1,354 @@
+Centos-Control (192.168.1.101)- Ansible Control machine - install Ansible 
+
+App Server (192.168.1.102)- target machine 
+
+DBServer (192.168.1.103)- target machine 
+
+
+Steps 
+
+FOR CENTOS / REDHAT SERVER
+
+1. Create non root user with admin rights 
+
+username : ansibleadm
+password : ansibleadm 
+
+
+yum search epel 
+
+yum info epel-release 
+
+sudo yum install epel-release
+
+sudo yum config-manager --set-enabled PowerTools
+
+repeat the command 
+
+sudo yum config-manager --set-enabled PowerTools
+
+
+sudo yum update 
+
+
+sudo yum repolist 
+
+sudo yum -y install ansible 
+
+ansible --version
+
+
+FOR UBUNTU 18.X
+
+1. Create non root user with admin rights 
+
+username : ansibleadm
+password : ansibleadm 
+
+
+sudo hostnamectl set-hostname AnsibleControl
+
+sudo apt update 
+
+sudo apt install software-properties-common 
+
+sudo apt-add-repository --yes --update ppa:ansible/ansible
+
+sudo apt install ansible 
+
+ansible --version 
+
+
+
+
+
+ROOT LOGIN 
+
+USER : root
+
+PASSWORD : osboxes.org
+
+
+
+
+
+
+Centos-Control (192.168.1.101)- Ansible Control machine - install Ansible 
+
+App Server (192.168.1.102)- target machine 
+
+DBServer (192.168.1.103)- target machine 
+
+
+Steps 
+
+FOR CENTOS / REDHAT SERVER
+
+1. Create non root user with admin rights 
+
+username : ansibleadm
+password : ansibleadm 
+
+
+yum search epel 
+
+yum info epel-release 
+
+sudo yum install epel-release
+
+sudo yum config-manager --set-enabled PowerTools
+
+repeat the command 
+
+sudo yum config-manager --set-enabled PowerTools
+
+
+sudo yum update 
+
+
+sudo yum repolist 
+
+sudo yum -y install ansible 
+
+ansible --version
+
+
+FOR UBUNTU 18.X
+
+1. Create non root user with admin rights 
+
+username : ansibleadm
+password : ansibleadm 
+
+
+sudo hostnamectl set-hostname AnsibleControl
+
+sudo apt update 
+
+sudo apt install software-properties-common 
+
+sudo apt-add-repository --yes --update ppa:ansible/ansible
+
+sudo apt install ansible 
+
+ansible --version 
+
+
+
+
+
+ROOT LOGIN 
+
+USER : root
+
+PASSWORD : osboxes.org
+
+
+
+INVENTORY EXAMPLES
+
+example 1
+
+[centos]
+centos1
+centos2
+centos3
+
+
+[ubuntu]
+ubuntu1
+ubuntu2
+ubuntu3
+
+two types of inventories 
+
+static inventory
+dynamic inventories - python program to decide inventory values 
+
+
+
+ansible command 
+
+--inventory 
+-i PATHNAME
+
+
+example 2 : executor is non ansible user 
+
+[centos]
+centos1 ansible_user=ansibleadm
+centos2 ansible_user=ansibleadm
+centos3 ansible_user=ansibleadm
+
+
+[ubuntu]
+ubuntu1
+ubuntu2
+ubuntu3
+
+
+
+example 3 : ansible activity required root or sudo privilages to run the commands 
+
+
+
+[centos]
+centos1 ansible_become=true ansible_become_password=password
+centos2 ansible_become=true ansible_become_password=password
+centos3 ansible_become=true ansible_become_password=osboxes.org
+
+
+[ubuntu]
+ubuntu1
+ubuntu2
+ubuntu3
+
+example 4 : different ssh port number 
+
+
+[centos]
+centos1 ansible_user=ansibleadm ansible_port=2222
+centos2
+centos3 ansible_become=true ansible_become_password=osboxes.org
+
+
+[ubuntu]
+ubuntu1
+ubuntu2
+ubuntu3
+
+
+
+example 5 : different ssh port number 
+
+
+[centos]
+centos1:2222 ansible_user=ansibleadm
+centos2
+centos3 ansible_become=true ansible_become_password=osboxes.org
+
+
+[ubuntu]
+ubuntu1
+ubuntu2
+ubuntu3
+
+
+
+example 6 : Use ansible to work on ansible control machine 
+
+[control]
+Centos-Control ansible_connection=local 
+
+
+[centos]
+centos1
+centos2
+centos3
+
+
+[ubuntu]
+ubuntu1
+ubuntu2
+ubuntu3
+
+
+example 7 : replication with series 
+
+
+
+[maincentos]
+centos1
+centos2
+
+[othercentos]
+centos[3:40]
+
+
+[ubuntu]
+ubuntu1
+ubuntu2
+ubuntu3
+
+
+example 8 : assign group level variables 
+
+
+[maincentos]
+centos1
+centos2
+
+[othercentos]
+centos[3:40]
+
+
+[ubuntu]
+ubuntu1
+ubuntu2
+ubuntu3
+
+
+[linux:children]
+maincentos
+othercentos
+ubuntu
+
+
+[linux:vars]
+properties=value
+
+
+[ubuntu:vars]
+ansible_become=true
+ansible_become_pass=password
+
+[othercentos:vars]
+ansible_user=root
+
+
+example 9 : add ip address and its series 
+
+
+
+
+[maincentos]
+centos1
+centos2
+
+[othercentos]
+centos[3:40]
+192.168.1.103
+192.168.1.[0:255]
+192.168.[1:20].[0:255]
+
+
+[ubuntu]
+ubuntu1
+ubuntu2
+ubuntu3
+
+
+
+
+
+ansible.cfg can be defined in 3 places 
+
+
+/etc/ansible/ansible.cfg - last preference 
+
+
+~/ansible.cfg - second preference 
+
+
+./ansible.cfg - First preference
+
+
+
+$ANSIBLE_CONFIG - HIGH PRIORITY WHICH OVERRIDES ALL ABOVE THREE LOCATIONS 
+
+
+
+
+to work with OS level commands 
+
+you have two modules in ansible 
